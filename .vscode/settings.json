@@ -1,0 +1,7 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "cSpell.words": [
+        "decisioninja"
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
+}

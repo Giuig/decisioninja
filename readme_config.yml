@@ -1,0 +1,18 @@
+slug: decisioninja
+name: decisioninja
+github: https://github.com/Giuig/decisioninja
+description: >
+  Decision-making app built with Flutter. Roll dice, use the pointer, or flip a coin — let the ninja decide.
+web_url: https://giuig.github.io/decisioninja/
+build_commands: |
+  flutter pub get
+  flutter build apk --release
+  flutter build web --base-href=/decisioninja/ --release
+features:
+  - "**Binary Decisions** — choose between Left/Right, Yes/No, or Heads/Tails"
+  - "**Dice Roller** — roll dice with various sides (D4, D6, D8, D10, D12, D20)"
+  - "**Pointer** — classic spinner for yes/no decisions"
+  - "**Material You** — dynamic color theming, light and dark mode"
+  - "**Google-Free** — no Google Play Services required, fully FOSS"
+kofi_url: https://ko-fi.com/giuig
+kofi_description: "I make FOSS apps in my free time, a coffee would help me keep them going!"

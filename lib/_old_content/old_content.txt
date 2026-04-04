@@ -1,0 +1,47 @@
+// radial chart
+      Widget chartWidget = SfCircularChart(
+        title:
+            ChartTitle(text: AppLocalizations.of(context)!.decisionsMadeSoFar),
+        legend: Legend(
+          isVisible: true,
+          overflowMode: LegendItemOverflowMode.wrap,
+        ),
+        series: <CircularSeries>[
+          RadialBarSeries<ChartData, String>(
+            useSeriesColor: true,
+            trackOpacity: 0.4,
+            dataSource: chartData,
+            pointColorMapper: (ChartData data, _) => data.color,
+            dataLabelSettings: DataLabelSettings(
+              isVisible: true,
+              textStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.onBackground),
+            ),
+            xValueMapper: (ChartData data, _) => data.x,
+            yValueMapper: (ChartData data, _) => data.y.toInt(),
+            cornerStyle: CornerStyle.bothCurve,
+          ),
+        ],
+      );
+
+// pie chart
+      Widget chartWidget = SfCircularChart(
+        title:
+            ChartTitle(text: AppLocalizations.of(context)!.decisionsMadeSoFar),
+        legend: Legend(
+          isVisible: true,
+          overflowMode: LegendItemOverflowMode.wrap,
+        ),
+        series: <CircularSeries>[
+          PieSeries<ChartData, String>(
+              dataSource: chartData,
+              pointColorMapper: (ChartData data, _) => data.color,
+              startAngle: 270,
+              endAngle: 90,
+              dataLabelSettings: DataLabelSettings(
+                isVisible: true,
+              ),
+              xValueMapper: (ChartData data, _) => data.x,
+              yValueMapper: (ChartData data, _) => data.y.toInt()),
+        ],
+      );

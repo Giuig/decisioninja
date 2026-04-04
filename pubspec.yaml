@@ -1,0 +1,47 @@
+name: decisioninja
+description: Random decision maker - dice roller, pointer, coin flip, and binary choice picker
+
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 1.5.21
+
+environment:
+  sdk: ">=3.1.2 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # TODO: Change back to git ref before committing
+  ninja_material:
+    git:
+      url: https://github.com/Giuig/ninja_material.git
+      ref: v1.4.3
+
+  flutter_localizations:
+    sdk: flutter
+
+  dice_icons: ^0.1.7
+  syncfusion_flutter_charts: ^29.2.11
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.4
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  fonts:
+    - family: The Hand
+      fonts:
+        - asset: assets/fonts/The Hand Regular.otf
+
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: assets/icons/decisioninja_icon.png
+  adaptive_icon_background: "#AD4567"  # pale dark pink - matches app theme
+  adaptive_icon_foreground: assets/icons/decisioninja_icon.png
