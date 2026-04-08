@@ -51,6 +51,7 @@ flutter build web --base-href=/decisioninja/ --release
 
 | App | Description |
 |---|---|
+| [tvninja](https://github.com/Giuig/tvninja) | IPTV / M3U8 player |
 | [auraninja](https://github.com/Giuig/auraninja) | Ambient sound mixer and focus app |
 | [ninja_material](https://github.com/Giuig/ninja_material) | Shared Flutter library powering all ninja apps |
 
