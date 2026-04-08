@@ -1,0 +1,5 @@
+Initial Material You redesign with dynamic colors
+Improved dice rolling with better animations
+Added binary choice picker feature
+Better dark/light theme support
+Localized in multiple languages

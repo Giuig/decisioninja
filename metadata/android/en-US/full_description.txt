@@ -1,0 +1,13 @@
+Decisioninja is a minimalist random decision maker app with Material You design.
+
+Features:
+
+- Dice roller (1-6 dice, custom die sizes)
+- Coin flip with animated flip
+- Random pointer wheel for choices
+- Binary choice picker (Yes/No, Heads/Tails, etc.)
+- History of recent decisions
+- Beautiful Material You theming (dynamic colors)
+- Dark and light mode support
+- Fully localized (English, Italian, French, German, Spanish, Japanese)
+- No ads, no tracking, fully open source
