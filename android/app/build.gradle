@@ -83,6 +83,12 @@ flutter {
     source '../..'
 }
 
+tasks.withType(JniNativeBundlesTask) {
+    cmakeOptions {
+        arguments += ["-DCMAKE_CXX_FLAGS:STRING=-Wl,--build-id=none"]
+    }
+}
+
 dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 }

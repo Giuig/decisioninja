@@ -10,7 +10,7 @@
 
 ```bash
 flutter pub get
-flutter build apk --release --split-per-abi
+flutter build apk --release --split-per-abi --no-tree-shake-icons --split-debug-info=build/debug-info
 ```
 
 Output APKs will be in:
