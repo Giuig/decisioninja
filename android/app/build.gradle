@@ -49,6 +49,8 @@ android {
         versionCode pubspecVersionCode
         versionName pubspecVersionName
         multiDexEnabled true
+        // Enable legacy compression for smaller APK (saves ~8MB)
+        extractNativeLibs false
     }
 
     // Required by IzzyOnDroid / F-Droid
