@@ -31,7 +31,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "io.github.giuig.decisioninja"
-    compileSdk 35
+    compileSdk 36
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -42,6 +42,12 @@ android {
         jvmTarget = '17'
     }
 
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+
     defaultConfig {
         applicationId "io.github.giuig.decisioninja"
         minSdk 26
@@ -49,8 +55,6 @@ android {
         versionCode pubspecVersionCode
         versionName pubspecVersionName
         multiDexEnabled true
-        // Enable legacy compression for smaller APK (saves ~8MB)
-        extractNativeLibs false
     }
 
     // Required by IzzyOnDroid / F-Droid
@@ -83,12 +87,6 @@ android {
 
 flutter {
     source '../..'
-}
-
-tasks.withType(JniNativeBundlesTask) {
-    cmakeOptions {
-        arguments += ["-DCMAKE_CXX_FLAGS:STRING=-Wl,--build-id=none"]
-    }
 }
 
 dependencies {
