@@ -1,0 +1,1 @@
+Reduced APK size using legacy JNI packaging, minification, and resource shrinking
