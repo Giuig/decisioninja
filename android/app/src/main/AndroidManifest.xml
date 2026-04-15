@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-package="io.github.giuig.decisioninja">
-<uses-permission android:name="android.permission.INTERNET" />
-    <!-- Required by url_launcher on Android 11+ to resolve http/https intents -->
+    xmlns:tools="http://schemas.android.com/tools"
+    package="io.github.giuig.decisioninja">
+    <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
