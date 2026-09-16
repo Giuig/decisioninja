@@ -10,7 +10,6 @@ import 'package:decisioninja/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dice_icons/dice_icons.dart';
-import 'package:ninja_material/config/global_notifier.dart';
 
 class DicePage extends StatefulWidget {
   DicePage({super.key});
@@ -67,7 +66,6 @@ class _DicePageState extends State<DicePage> with AnimatingPageMixin {
 
 
   void _chooseScore() {
-    globalNotifierCounter.incrementValue();
     incrementStat(StatType.dice);
     if (_animationInProgress) return;
 

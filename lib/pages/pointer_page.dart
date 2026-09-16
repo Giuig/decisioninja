@@ -5,7 +5,6 @@ import 'package:decisioninja/config/animation_config.dart';
 import 'package:decisioninja/utils/stats_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:decisioninja/l10n/app_localizations.dart';
-import 'package:ninja_material/config/global_notifier.dart';
 
 class PointerPage extends StatefulWidget {
   const PointerPage({super.key});
@@ -31,7 +30,6 @@ class _PointerPageState extends State<PointerPage> with AnimatingPageMixin {
   set animationInProgress(bool value) => _animationInProgress = value;
 
   void _chooseAngle() {
-    globalNotifierCounter.incrementValue();
     incrementStat(StatType.pointer);
 
     setState(() {
