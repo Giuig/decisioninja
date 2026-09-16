@@ -9,7 +9,6 @@ import 'package:decisioninja/models/binary_choice.dart';
 import 'package:decisioninja/utils/stats_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:decisioninja/l10n/app_localizations.dart';
-import 'package:ninja_material/config/global_notifier.dart';
 
 enum DecisionMode {
   leftRight,
@@ -112,7 +111,6 @@ class _BinaryDecisionPageState extends State<BinaryDecisionPage>
   }
 
   void _chooseDirection() {
-    globalNotifierCounter.incrementValue();
     incrementStat(StatType.leftRight);
 
     int count = 0;

@@ -10,7 +10,6 @@ import 'package:decisioninja/utils/icon_tuples.dart';
 import 'package:decisioninja/utils/stats_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:decisioninja/l10n/app_localizations.dart';
-import 'package:ninja_material/config/global_notifier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NinjaPage extends StatefulWidget {
@@ -67,7 +66,6 @@ class _NinjaPageState extends State<NinjaPage> with AnimatingPageMixin {
   void _chooseOption() {
     if (_animationInProgress || _numberOfOptions < 2) return;
 
-    globalNotifierCounter.incrementValue();
     incrementStat(StatType.ninja);
 
     setState(() {
