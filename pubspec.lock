@@ -273,11 +273,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v1.5.0"
-      resolved-ref: "4d85ae211189bf9b5b1bbd2cfab32ed15c90e569"
+      ref: "v1.6.8"
+      resolved-ref: "3f080eb8e37448b630a92a9266b40cce9e6a242e"
       url: "https://github.com/Giuig/ninja_material.git"
     source: git
-    version: "1.5.0"
+    version: "1.6.8"
   package_info_plus:
     dependency: transitive
     description:
