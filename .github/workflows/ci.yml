@@ -1,0 +1,26 @@
+name: CI
+
+# Thin shim. The checks live in ninja_material's shared app-ci.yml, alongside
+# build-app.yml / version-bump.yml / web-deploy.yml, so there is one definition
+# of "is this green" for the whole fleet instead of one per repo.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    uses: Giuig/ninja_material/.github/workflows/app-ci.yml@main
+    with:
+      app-name: decisioninja
+      # This app has no tests. test/widget_test.dart is the stock Flutter counter
+      # template with every line commented out, so `flutter test` does not report
+      # zero tests — it fails to load the file at all ("Missing definition of
+      # `main` method"), and deleting the file would instead fail with "no test
+      # files found". Leaving this on would make the gate red from its first run,
+      # which is the same reasoning as fatal-infos in app-ci.yml.
+      #
+      # Flip to true (and drop this comment) with the first real test. The
+      # analyzer, formatter-adjacent checks and the web build all still run.
+      run-tests: false
