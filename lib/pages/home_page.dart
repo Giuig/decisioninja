@@ -24,7 +24,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
   Widget _buildWelcomeText() {
     // Watch the AppStatsNotifier for changes
     final appStats = context.watch<AppStatsNotifier>();

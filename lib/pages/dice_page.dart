@@ -133,16 +133,6 @@ class _DicePageState extends State<DicePage> with AnimatingPageMixin {
     }
   }
 
-  void _resetScores() {
-    if (!mounted) return;
-    setState(() {
-      for (int i = 0; i < _scores.length; i++) {
-        _scores[i] = 0;
-        _previousScores[i] = 0;
-      }
-    });
-  }
-
   int calculateTotalScore() {
     if (_scores.isEmpty || _scores.every((s) => s == 0)) return 0;
     return _scores.where((s) => s > 0).fold(0, (a, b) => a + b);
