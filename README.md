@@ -1,5 +1,7 @@
 # decisioninja
 
+[![Release](https://img.shields.io/github/v/release/Giuig/decisioninja)](https://github.com/Giuig/decisioninja/releases/latest)
+
 Decision-making app built with Flutter. Roll dice, use the pointer, or flip a coin — let the ninja decide.
 
 
@@ -30,6 +32,7 @@ Get the latest APK from the [Releases page](https://github.com/Giuig/decisioninj
 ### Install via Obtainium
 
 Add `https://github.com/Giuig/decisioninja` in [Obtainium](https://github.com/ImranR98/Obtainium) to receive automatic updates. Use the APK filter `decisioninja-\d` to select the universal build.
+
 
 
 ## Support

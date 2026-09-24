@@ -1,12 +1,14 @@
 slug: decisioninja
 name: decisioninja
 github: https://github.com/Giuig/decisioninja
+badges:
+  - release
 description: >
   Decision-making app built with Flutter. Roll dice, use the pointer, or flip a coin — let the ninja decide.
 web_url: https://giuig.github.io/decisioninja/
 build_commands: |
   flutter pub get
-  flutter build apk --release
+  flutter build apk --release --split-per-abi --no-tree-shake-icons --split-debug-info=build/debug-info
   flutter build web --base-href=/decisioninja/ --release
 features:
   - "**Binary Decisions** — choose between Left/Right, Yes/No, or Heads/Tails"
