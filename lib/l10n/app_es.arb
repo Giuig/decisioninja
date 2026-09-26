@@ -18,11 +18,8 @@
     "pointArrow": "¡Apunta la flecha!",
     "pointing": "Estoy apuntando...",
     "arrowResult": "El resultado es: allí",
-    "addFirstNinja": "¡Añadir opciones!",
-    "createNinja": "Crear opción",
-    "chooseNinja": "¡Elige una opción!",
-    "nameNinja": "nombre de la opción",
-    "chosenNinja": "Opción elegida: ",
+    "addFirstNinja": "Añade al menos 2 opciones",
+    "chooseNinja": "Elige por mí",
     "cancel": "Cancelar",
     "yesNo": "Sí/No",
     "headsTails": "Cara/Cruz",
@@ -36,7 +33,11 @@
 "leftRightLabel": "I/D",
     "yesNoLabel": "S/N",
     "headsTailsLabel": "C/S",
-    "editOption": "Editar opción",
-    "save": "Guardar",
-    "defaultOptionName": "Opción"
+    "addOptionHint": "Añade una opción o pega a, b, c",
+    "addOption": "Añadir opción",
+    "removeOption": "Quitar {name}",
+    "dropAndPickAgain": "Descartar y elegir de nuevo",
+    "clearAll": "Borrar todo",
+    "optionsCleared": "Opciones borradas",
+    "undo": "Deshacer"
 }

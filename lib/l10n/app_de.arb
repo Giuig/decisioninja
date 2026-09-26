@@ -18,11 +18,8 @@
     "pointArrow": "Ziele auf den Pfeil!",
     "pointing": "Ich zielen...",
     "arrowResult": "Das Ergebnis ist: dort",
-    "addFirstNinja": "Optionen hinzufügen!",
-    "createNinja": "Option erstellen",
-    "chooseNinja": "Wähle eine Option!",
-    "nameNinja": "Name der Option",
-    "chosenNinja": "Gewählte Option: ",
+    "addFirstNinja": "Mindestens 2 Optionen hinzufügen",
+    "chooseNinja": "Wähl für mich",
     "cancel": "Abbrechen",
     "yesNo": "Ja/Nein",
     "headsTails": "Kopf/Zahl",
@@ -36,7 +33,11 @@
 "leftRightLabel": "L/R",
     "yesNoLabel": "J/N",
     "headsTailsLabel": "K/Z",
-    "editOption": "Option bearbeiten",
-    "save": "Speichern",
-    "defaultOptionName": "Option"
+    "addOptionHint": "Option hinzufügen oder a, b, c einfügen",
+    "addOption": "Option hinzufügen",
+    "removeOption": "{name} entfernen",
+    "dropAndPickAgain": "Streichen und neu wählen",
+    "clearAll": "Alle löschen",
+    "optionsCleared": "Optionen gelöscht",
+    "undo": "Rückgängig"
 }

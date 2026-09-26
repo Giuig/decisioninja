@@ -18,11 +18,8 @@
     "pointArrow": "矢を指して！",
     "pointing": "指しています...",
     "arrowResult": "結果は：ここ",
-    "addFirstNinja": "オプションを追加!",
-    "createNinja": "オプションを作成",
-    "chooseNinja": "オプションを選択！",
-    "nameNinja": "オプションの名前",
-    "chosenNinja": "選ばれたオプション：",
+    "addFirstNinja": "選択肢を2つ以上追加してください",
+    "chooseNinja": "私の代わりに選んで",
     "cancel": "キャンセル",
     "yesNo": "はい/いいえ",
     "headsTails": "表/裏",
@@ -36,7 +33,11 @@
     "leftRightLabel": "左/右",
     "yesNoLabel": "O/X",
     "headsTailsLabel": "表/裏",
-    "editOption": "オプションを編集",
-    "save": "保存",
-    "defaultOptionName": "オプション"
+    "addOptionHint": "選択肢を追加、または a, b, c を貼り付け",
+    "addOption": "選択肢を追加",
+    "removeOption": "{name}を削除",
+    "dropAndPickAgain": "外してもう一度選ぶ",
+    "clearAll": "すべて消去",
+    "optionsCleared": "選択肢を消去しました",
+    "undo": "元に戻す"
 }

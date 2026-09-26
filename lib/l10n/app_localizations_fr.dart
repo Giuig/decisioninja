@@ -68,19 +68,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get arrowResult => 'Le résultat est : là';
 
   @override
-  String get addFirstNinja => 'Ajouter des options !';
+  String get addFirstNinja => 'Ajoutez au moins 2 options';
 
   @override
-  String get createNinja => 'Créer une option';
-
-  @override
-  String get chooseNinja => 'Choisir une option !';
-
-  @override
-  String get nameNinja => 'Nom de l\'option';
-
-  @override
-  String get chosenNinja => 'Option choisie : ';
+  String get chooseNinja => 'Choisis pour moi';
 
   @override
   String get cancel => 'Annuler';
@@ -125,11 +116,25 @@ class AppLocalizationsFr extends AppLocalizations {
   String get headsTailsLabel => 'P/F';
 
   @override
-  String get editOption => 'Modifier l\'option';
+  String get addOptionHint => 'Ajoutez une option, ou collez a, b, c';
 
   @override
-  String get save => 'Enregistrer';
+  String get addOption => 'Ajouter une option';
 
   @override
-  String get defaultOptionName => 'Option';
+  String removeOption(String name) {
+    return 'Retirer $name';
+  }
+
+  @override
+  String get dropAndPickAgain => 'L\'écarter et rechoisir';
+
+  @override
+  String get clearAll => 'Tout effacer';
+
+  @override
+  String get optionsCleared => 'Options effacées';
+
+  @override
+  String get undo => 'Annuler';
 }
