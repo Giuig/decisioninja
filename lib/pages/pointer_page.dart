@@ -108,7 +108,7 @@ class _PointerPageState extends State<PointerPage> with AnimatingPageMixin {
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 15.0),
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: _animationInProgress ? null : _chooseAngle,
               child: Text(
                 _animationInProgress

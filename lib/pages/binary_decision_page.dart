@@ -236,7 +236,7 @@ class _BinaryDecisionPageState extends State<BinaryDecisionPage>
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 15.0),
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: _animationInProgress ? null : _chooseDirection,
               child: Text(
                 _animationInProgress
