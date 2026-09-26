@@ -14,6 +14,7 @@ jobs:
     uses: Giuig/ninja_material/.github/workflows/app-ci.yml@main
     with:
       app-name: decisioninja
+      check-icons: true
       # This app has no tests. test/widget_test.dart is the stock Flutter counter
       # template with every line commented out, so `flutter test` does not report
       # zero tests — it fails to load the file at all ("Missing definition of
