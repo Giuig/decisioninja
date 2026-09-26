@@ -83,7 +83,7 @@ class _PointerPageState extends State<PointerPage> with AnimatingPageMixin {
                         Icons.arrow_circle_up_rounded,
                         size: 180,
                         color: _angleTurns == 0
-                            ? Theme.of(context).colorScheme.onInverseSurface
+                            ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38)
                             : primaryColor,
                       ),
                     ),
@@ -108,7 +108,7 @@ class _PointerPageState extends State<PointerPage> with AnimatingPageMixin {
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 15.0),
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: _animationInProgress ? null : _chooseAngle,
               child: Text(
                 _animationInProgress

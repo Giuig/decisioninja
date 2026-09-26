@@ -203,7 +203,7 @@ class _BinaryDecisionPageState extends State<BinaryDecisionPage>
                       size: 150,
                       color: _direction == _currentChoice.optionA
                           ? primaryColor
-                          : Theme.of(context).colorScheme.onInverseSurface,
+                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
                     ),
                   ),
                   const SizedBox(width: 20),
@@ -214,7 +214,7 @@ class _BinaryDecisionPageState extends State<BinaryDecisionPage>
                       size: 150,
                       color: _direction == _currentChoice.optionB
                           ? primaryColor
-                          : Theme.of(context).colorScheme.onInverseSurface,
+                          : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
                     ),
                   ),
                 ],
@@ -236,7 +236,7 @@ class _BinaryDecisionPageState extends State<BinaryDecisionPage>
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 15.0),
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: _animationInProgress ? null : _chooseDirection,
               child: Text(
                 _animationInProgress

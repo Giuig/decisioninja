@@ -68,19 +68,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get arrowResult => '結果は：ここ';
 
   @override
-  String get addFirstNinja => 'オプションを追加!';
+  String get addFirstNinja => '選択肢を2つ以上追加してください';
 
   @override
-  String get createNinja => 'オプションを作成';
-
-  @override
-  String get chooseNinja => 'オプションを選択！';
-
-  @override
-  String get nameNinja => 'オプションの名前';
-
-  @override
-  String get chosenNinja => '選ばれたオプション：';
+  String get chooseNinja => '私の代わりに選んで';
 
   @override
   String get cancel => 'キャンセル';
@@ -125,11 +116,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get headsTailsLabel => '表/裏';
 
   @override
-  String get editOption => 'オプションを編集';
+  String get addOptionHint => '選択肢を追加、または a, b, c を貼り付け';
 
   @override
-  String get save => '保存';
+  String get addOption => '選択肢を追加';
 
   @override
-  String get defaultOptionName => 'オプション';
+  String removeOption(String name) {
+    return '$nameを削除';
+  }
+
+  @override
+  String get dropAndPickAgain => '外してもう一度選ぶ';
+
+  @override
+  String get clearAll => 'すべて消去';
+
+  @override
+  String get optionsCleared => '選択肢を消去しました';
+
+  @override
+  String get undo => '元に戻す';
 }

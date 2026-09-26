@@ -223,32 +223,14 @@ abstract class AppLocalizations {
   /// No description provided for @addFirstNinja.
   ///
   /// In en, this message translates to:
-  /// **'Add options first!'**
+  /// **'Add at least 2 options'**
   String get addFirstNinja;
-
-  /// No description provided for @createNinja.
-  ///
-  /// In en, this message translates to:
-  /// **'Create Option'**
-  String get createNinja;
 
   /// No description provided for @chooseNinja.
   ///
   /// In en, this message translates to:
-  /// **'Choose the option!'**
+  /// **'Choose for me'**
   String get chooseNinja;
-
-  /// No description provided for @nameNinja.
-  ///
-  /// In en, this message translates to:
-  /// **'Option Name'**
-  String get nameNinja;
-
-  /// No description provided for @chosenNinja.
-  ///
-  /// In en, this message translates to:
-  /// **'Chosen option: '**
-  String get chosenNinja;
 
   /// No description provided for @cancel.
   ///
@@ -334,23 +316,47 @@ abstract class AppLocalizations {
   /// **'H/T'**
   String get headsTailsLabel;
 
-  /// No description provided for @editOption.
+  /// No description provided for @addOptionHint.
   ///
   /// In en, this message translates to:
-  /// **'Edit Option'**
-  String get editOption;
+  /// **'Add an option, or paste a, b, c'**
+  String get addOptionHint;
 
-  /// No description provided for @save.
+  /// No description provided for @addOption.
   ///
   /// In en, this message translates to:
-  /// **'Save'**
-  String get save;
+  /// **'Add option'**
+  String get addOption;
 
-  /// No description provided for @defaultOptionName.
+  /// No description provided for @removeOption.
   ///
   /// In en, this message translates to:
-  /// **'Option'**
-  String get defaultOptionName;
+  /// **'Remove {name}'**
+  String removeOption(String name);
+
+  /// No description provided for @dropAndPickAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop it and pick again'**
+  String get dropAndPickAgain;
+
+  /// No description provided for @clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get clearAll;
+
+  /// No description provided for @optionsCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Options cleared'**
+  String get optionsCleared;
+
+  /// No description provided for @undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get undo;
 }
 
 class _AppLocalizationsDelegate

@@ -6,12 +6,18 @@ import 'dart:convert';
 
 import 'package:decisioninja/config/config.dart';
 import 'package:decisioninja/config/animation_config.dart';
-import 'package:decisioninja/utils/icon_tuples.dart';
 import 'package:decisioninja/utils/stats_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:decisioninja/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Picks one of the user's own options.
+///
+/// Built as a quick list: one text field that is always there, options as
+/// chips, one button to choose. It replaced a one-dialog-per-option flow
+/// (tap +, type at most 10 characters, tap Create, repeat, at most 9 options,
+/// rename and delete behind an edit-mode toggle) that the owner found too
+/// tedious to use — design "A" of the 2026-09-26 mockups.
 class NinjaPage extends StatefulWidget {
   NinjaPage({super.key});
 
@@ -27,11 +33,19 @@ class _NinjaPageState extends State<NinjaPage> with AnimatingPageMixin {
   }
 
   bool _animationInProgress = false;
-  bool _isEditMode = false;
-  int _numberOfOptions = 0;
-  int _chosenOptionIndex = -1;
   Timer? _animationTimer;
-  late List<Option> _options = [];
+  List<Option> _options = [];
+
+  /// The chip lit up: the one the pick animation is passing over, then the
+  /// winner once it lands. -1 for none.
+  int _highlighted = -1;
+
+  /// The last pick, shown in the result card; null while choosing or after
+  /// the list changed.
+  String? _winner;
+
+  final TextEditingController _inputController = TextEditingController();
+  final FocusNode _inputFocus = FocusNode();
   static final Random _random = Random();
 
   @override
@@ -43,6 +57,12 @@ class _NinjaPageState extends State<NinjaPage> with AnimatingPageMixin {
   @override
   set animationInProgress(bool value) => _animationInProgress = value;
 
+  @override
+  void dispose() {
+    _inputController.dispose();
+    _inputFocus.dispose();
+    super.dispose();
+  }
 
   Future<void> loadOptionList() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -57,203 +77,194 @@ class _NinjaPageState extends State<NinjaPage> with AnimatingPageMixin {
     if (mounted) {
       setState(() {
         _options = optionList;
-        _numberOfOptions = optionList.length;
-        _chosenOptionIndex = -1;
+        _clearResult();
       });
     }
   }
 
-  void _chooseOption() {
-    if (_animationInProgress || _numberOfOptions < 2) return;
+  Future<void> saveOptionList() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<String> optionListJson = _options
+        .map((option) =>
+            jsonEncode(Option(option.name, option.icon).toJson()))
+        .toList();
+    await preferences.setStringList('optionList', optionListJson);
+    appStatsNotifier.setOptionList(_options);
+  }
 
-    incrementStat(StatType.ninja);
+  void _clearResult() {
+    _winner = null;
+    _highlighted = -1;
+  }
 
+  /// Adds whatever is in the field (see [newOptionNames]), then keeps the
+  /// field focused so the next option can be typed straight away.
+  void _addFromInput() {
+    if (_animationInProgress) return;
+    final added = newOptionNames(
+            _inputController.text, _options.map((o) => o.name))
+        // The icon is no longer shown; it is stored so the saved JSON keeps
+        // the shape older versions read and wrote.
+        .map((name) => Option(name, Icons.label_outline))
+        .toList();
+    _inputController.clear();
+    _inputFocus.requestFocus();
+    if (added.isEmpty) return;
     setState(() {
-      _isEditMode = false;
+      _options.addAll(added);
+      _clearResult();
     });
+    saveOptionList();
+  }
 
-    int currentIndex = 0;
+  void _removeOption(int index) {
+    if (_animationInProgress || index < 0 || index >= _options.length) return;
+    setState(() {
+      _options.removeAt(index);
+      _clearResult();
+    });
+    saveOptionList();
+  }
 
+  void _choose() {
+    if (_animationInProgress || _options.length < 2) return;
+
+    // Close the keyboard so the result card is not hidden behind it.
+    FocusScope.of(context).unfocus();
+    incrementStat(StatType.ninja);
+    setState(_clearResult);
+
+    int tick = 0;
     startSpinAnimation(
       generator: () {
-        _options = _options.map((option) {
-          return Option(option.name, option.icon, chosen: false);
-        }).toList();
-
-        _options[currentIndex] = Option(
-          _options[currentIndex].name,
-          _options[currentIndex].icon,
-          chosen: true,
-        );
-
-        currentIndex = (currentIndex + 1) % _options.length;
+        _highlighted = tick % _options.length;
+        tick++;
       },
       onComplete: () {
-        if (!mounted || _options.isEmpty) return;
-
-        int chosenIndex = _random.nextInt(_options.length);
-
+        if (!mounted) return;
         setState(() {
-          _options = _options.map((option) {
-            return Option(option.name, option.icon, chosen: false);
-          }).toList();
-
-          _chosenOptionIndex = chosenIndex;
-          _options[_chosenOptionIndex] = Option(
-            _options[_chosenOptionIndex].name,
-            _options[_chosenOptionIndex].icon,
-            chosen: true,
-          );
           _animationInProgress = false;
+          if (_options.length < 2) {
+            _clearResult();
+            return;
+          }
+          _highlighted = _random.nextInt(_options.length);
+          _winner = _options[_highlighted].name;
         });
       },
     );
   }
 
-  void _createOption(String name) {
-    if (!mounted) return;
-
-    if (name.isEmpty) {
-      name = AppLocalizations.of(context)!.defaultOptionName;
-    }
-
-    int suffix = 2;
-    String originalName = name;
-
-    while (_options.any((option) => option.name == name)) {
-      name = "$originalName $suffix";
-      suffix++;
-    }
-
-    final usedIcons = _options.map((option) => option.icon).toList();
-
-    final availableIcons = icons
-        .where((iconTuple) => !usedIcons.contains(iconTuple.item1))
-        .toList();
-
-    if (availableIcons.isEmpty) {
-      setState(() {
-        _options.add(Option(name, Icons.help_outline));
-        _numberOfOptions++;
-        _resetChosen();
-        _isEditMode = false;
-      });
-    } else {
-      final randomIcon = availableIcons[_random.nextInt(availableIcons.length)];
-
-      setState(() {
-        _options.add(Option(name, randomIcon.item1));
-        _numberOfOptions++;
-        _resetChosen();
-        _isEditMode = false;
-      });
-    }
-
+  /// Removes the winner and picks again among the rest — the quick way to
+  /// narrow a list down. The removal is saved like any other.
+  void _dropAndPickAgain() {
+    final winner = _winner;
+    if (_animationInProgress || winner == null || _options.length <= 2) return;
+    setState(() {
+      _options.removeWhere((o) => o.name == winner);
+      _clearResult();
+    });
     saveOptionList();
+    _choose();
   }
 
-  void _removeOption(int index) {
-    if (!mounted || index < 0 || index >= _options.length) return;
-
+  /// Empties the list in one go, with an Undo — starting a new decision
+  /// should not mean tapping ✕ on every chip.
+  void _clearAll() {
+    if (_animationInProgress || _options.isEmpty) return;
+    final removed = List<Option>.of(_options);
     setState(() {
-      if (_chosenOptionIndex == index) {
-        _chosenOptionIndex = -1;
-      } else if (_chosenOptionIndex > index) {
-        _chosenOptionIndex--;
-      }
-      _options.removeAt(index);
-      _numberOfOptions--;
-      _resetChosen();
-      if (_options.isEmpty) {
-        _isEditMode = false;
-      }
-      saveOptionList();
+      _options.clear();
+      _clearResult();
     });
+    saveOptionList();
+    final l10n = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        content: Text(l10n.optionsCleared),
+        action: SnackBarAction(
+          label: l10n.undo,
+          onPressed: () {
+            if (!mounted || _options.isNotEmpty) return;
+            setState(() => _options.addAll(removed));
+            saveOptionList();
+          },
+        ),
+      ));
   }
 
-  void _resetChosen() {
-    if (!mounted) return;
-
-    setState(() {
-      _options = _options.map((option) {
-        return Option(option.name, option.icon, chosen: false);
-      }).toList();
-      _chosenOptionIndex = -1;
-    });
-  }
-
-  void _showCreateOptionModal() {
-    String optionName = "";
-
-    ValueNotifier<String> nameNotifier = ValueNotifier(optionName);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.createNinja),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  textCapitalization: TextCapitalization.sentences,
-                  maxLength: 10,
-                  onChanged: (value) {
-                    nameNotifier.value = value;
-                  },
-                  decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.nameNinja),
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _createOption(nameNotifier.value);
-                  },
-                  child: Text(AppLocalizations.of(context)!.createNinja),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> saveOptionList() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    List<String> optionListJson =
-        _options.map((option) => jsonEncode(option.toJson())).toList();
-    await preferences.setStringList('optionList', optionListJson);
-    appStatsNotifier.setOptionList(_options);
-  }
-
+  // Laid out in the frame every other tab uses: a control bar on top, the
+  // stage in the middle, one result line, then three buttons — tonal side
+  // actions either side of the main one. The first version of this page had
+  // its own heading, a full-width filled button and a result card, and read
+  // as a different app (owner, 2026-09-26).
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final canChoose = _options.length >= 2 && !_animationInProgress;
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(height: 10),
+          // The control bar: where L/R and Dice have their selector.
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: TextField(
+              controller: _inputController,
+              focusNode: _inputFocus,
+              enabled: !_animationInProgress,
+              textCapitalization: TextCapitalization.sentences,
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                hintText: l10n.addOptionHint,
+                isDense: true,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24)),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                suffixIcon: IconButton(
+                  onPressed: _animationInProgress ? null : _addFromInput,
+                  tooltip: l10n.addOption,
+                  icon: Icon(Icons.add),
+                ),
+              ),
+              onSubmitted: (_) => _addFromInput(),
+              // Overridden so submitting does not drop focus: the default
+              // closes the keyboard after every option.
+              onEditingComplete: () {},
+            ),
+          ),
+          // The stage, centred like the dice and the arrow.
           Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Center(child: buildOptionGrid(constraints));
-              },
+            child: Center(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(16),
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (var i = 0; i < _options.length; i++)
+                      _buildChip(i, theme, l10n),
+                  ],
+                ),
+              ),
             ),
           ),
           Opacity(
-            opacity: (!_animationInProgress) ? 1 : 0,
+            opacity: (_winner != null && !_animationInProgress) ? 1 : 0,
             child: Padding(
               padding: EdgeInsets.only(bottom: 8.0),
               child: Text(
-                _chosenOptionIndex != -1
-                    ? AppLocalizations.of(context)!.chosenNinja +
-                        _options[_chosenOptionIndex].name
-                    : '',
+                l10n.theResultIs(_winner ?? ''),
                 style: TextStyle(
-                    fontSize: resultTextSize,
-                    color: Theme.of(context).colorScheme.onSurface),
+                  fontSize: resultTextSize,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ),
           ),
@@ -262,171 +273,80 @@ class _NinjaPageState extends State<NinjaPage> with AnimatingPageMixin {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
-                  onPressed: _animationInProgress || _numberOfOptions == 0
-                      ? null
-                      : () {
-                          setState(() {
-                            _isEditMode = !_isEditMode;
-                          });
-                        },
-                  child: Icon(_isEditMode ? Icons.check : Icons.edit),
+                Tooltip(
+                  message: l10n.dropAndPickAgain,
+                  child: FilledButton.tonal(
+                    onPressed: _animationInProgress ||
+                            _winner == null ||
+                            _options.length <= 2
+                        ? null
+                        : _dropAndPickAgain,
+                    child: Icon(Icons.playlist_remove),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: _animationInProgress || _numberOfOptions < 2
-                      ? null
-                      : _chooseOption,
+                FilledButton(
+                  onPressed: canChoose ? _choose : null,
                   child: Text(
-                    _numberOfOptions < 2
-                        ? AppLocalizations.of(context)!.addFirstNinja
-                        : (_animationInProgress
-                            ? AppLocalizations.of(context)!.choosing
-                            : AppLocalizations.of(context)!.chooseNinja),
+                    _animationInProgress
+                        ? l10n.choosing
+                        : (_options.length < 2
+                            ? l10n.addFirstNinja
+                            : l10n.chooseNinja),
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: _animationInProgress
-                      ? null
-                      : _numberOfOptions == 9
-                          ? null
-                          : _showCreateOptionModal,
-                  child: Icon(Icons.add),
+                Tooltip(
+                  message: l10n.clearAll,
+                  child: FilledButton.tonal(
+                    onPressed: _animationInProgress || _options.isEmpty
+                        ? null
+                        : _clearAll,
+                    child: Icon(Icons.delete_sweep),
+                  ),
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget buildOptionGrid(BoxConstraints constraints) {
-    // Size from width only — items have variable height due to text label
-    final double iconSize = GridLayoutConfig.itemSize(
-      constraints,
-      _numberOfOptions,
-    );
-
-    return Padding(
-      padding: const EdgeInsets.all(GridLayoutConfig.outerPadding),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        spacing: GridLayoutConfig.spacing,
-        runSpacing: GridLayoutConfig.spacing,
-        children: List.generate(
-          _numberOfOptions,
-          (index) => SizedBox(
-            width: iconSize,
-            child: _buildOptionItem(index, iconSize),
-          ),
-        ),
+  Widget _buildChip(int index, ThemeData theme, AppLocalizations l10n) {
+    final name = _options[index].name;
+    final lit = index == _highlighted;
+    final scheme = theme.colorScheme;
+    return InputChip(
+      label: Text(name),
+      selected: lit,
+      showCheckmark: false,
+      selectedColor: scheme.primary,
+      labelStyle: TextStyle(
+        color: lit ? scheme.onPrimary : scheme.onSurface,
+        fontWeight: lit ? FontWeight.w700 : FontWeight.w500,
       ),
+      deleteIconColor: lit ? scheme.onPrimary : scheme.onSurfaceVariant,
+      deleteButtonTooltipMessage: l10n.removeOption(name),
+      onDeleted: _animationInProgress ? null : () => _removeOption(index),
     );
   }
+}
 
-  Widget _buildOptionItem(int index, double iconSize) {
-    final Color iconColor = _options[index].chosen
-        ? Theme.of(context).colorScheme.primary
-        : Theme.of(context).colorScheme.onInverseSurface;
-
-    return GestureDetector(
-      onTap: () {
-        if (_isEditMode) _editOptionName(index);
-      },
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          AnimatingOpacity(
-            animating: _animationInProgress,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(_options[index].icon, size: iconSize, color: iconColor),
-                if (_isEditMode)
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          _options[index].name,
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        SizedBox(width: 2),
-                        Icon(
-                          Icons.edit,
-                          size: 11,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ],
-                    ),
-                  )
-                else
-                  Text(_options[index].name, style: TextStyle(fontSize: 13)),
-              ],
-            ),
-          ),
-          if (_isEditMode)
-            Positioned(
-              top: 0,
-              right: 0,
-              child: IconButton(
-                icon: Icon(Icons.remove_circle),
-                color: Theme.of(context).colorScheme.errorContainer,
-                onPressed: () => _removeOption(index),
-              ),
-            ),
-        ],
-      ),
-    );
+/// The options to add from what was typed or pasted.
+///
+/// Splits on commas and newlines, so a pasted "pizza, sushi, tacos" becomes
+/// three options in one go. Blanks are dropped, and a name already in
+/// [existing] or earlier in the same input (ignoring case) is skipped rather
+/// than suffixed: two identical options would only double that option's odds.
+@visibleForTesting
+List<String> newOptionNames(String input, Iterable<String> existing) {
+  final seen = existing.map((e) => e.toLowerCase()).toSet();
+  final names = <String>[];
+  for (final part in input.split(RegExp(r'[,\n]'))) {
+    final name = part.trim();
+    if (name.isNotEmpty && seen.add(name.toLowerCase())) names.add(name);
   }
-
-  void _editOptionName(int index) {
-    TextEditingController controller =
-        TextEditingController(text: _options[index].name);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.editOption),
-          content: TextField(
-            controller: controller,
-            textCapitalization: TextCapitalization.sentences,
-            maxLength: 10,
-            decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.nameNinja),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(AppLocalizations.of(context)!.cancel),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _options[index].name = controller.text;
-                });
-                saveOptionList();
-                Navigator.of(context).pop();
-              },
-              child: Text(AppLocalizations.of(context)!.save),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  return names;
 }
 
 class Option {

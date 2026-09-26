@@ -198,13 +198,13 @@ class _DicePageState extends State<DicePage> with AnimatingPageMixin {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
+                FilledButton.tonal(
                   onPressed: _animationInProgress || _numberOfDice <= 1
                       ? null
                       : _decrementNumberOfDice,
                   child: Icon(Icons.remove),
                 ),
-                ElevatedButton(
+                FilledButton(
                   onPressed: _animationInProgress ? null : _chooseScore,
                   child: Text(
                     _animationInProgress
@@ -215,7 +215,7 @@ class _DicePageState extends State<DicePage> with AnimatingPageMixin {
                     style: TextStyle(fontSize: 18),
                   ),
                 ),
-                ElevatedButton(
+                FilledButton.tonal(
                   onPressed: _animationInProgress || _numberOfDice >= 9
                       ? null
                       : _incrementNumberOfDice,
